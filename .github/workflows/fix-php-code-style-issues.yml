@@ -25,4 +25,5 @@ jobs:
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          commit_message: Fix styling
+          commit_message: 'style(lint): fix coding style issues'
+          commit_options: '--no-verify'
