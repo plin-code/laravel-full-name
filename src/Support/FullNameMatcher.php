@@ -4,6 +4,7 @@ namespace PlinCode\LaravelFullName\Support;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use PlinCode\LaravelFullName\Exceptions\InvalidSortDirectionException;
 use PlinCode\LaravelFullName\Exceptions\UnsupportedRelationException;
 
 final class FullNameMatcher
@@ -41,7 +42,27 @@ final class FullNameMatcher
         string $direction,
         FullNameOptions $options,
     ): Builder {
-        throw new \RuntimeException('applySort is not implemented yet.');
+        $normalizedDirection = strtolower(trim($direction));
+
+        if (! in_array($normalizedDirection, ['asc', 'desc'], true)) {
+            throw InvalidSortDirectionException::fromDirection($direction);
+        }
+
+        if ($options->relation !== null) {
+            return self::applySortWithRelation($query, $normalizedDirection, $options);
+        }
+
+        return $query
+            ->orderBy($options->lastNameColumn, $normalizedDirection)
+            ->orderBy($options->firstNameColumn, $normalizedDirection);
+    }
+
+    private static function applySortWithRelation(
+        Builder $query,
+        string $direction,
+        FullNameOptions $options,
+    ): Builder {
+        throw new \RuntimeException('applySort via relation is not implemented yet.');
     }
 
     public static function normalize(string $input): string
