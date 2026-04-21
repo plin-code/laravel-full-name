@@ -1,10 +1,14 @@
 {
     "name": "plin-code/laravel-full-name",
-    "description": "This is my package laravel-full-name",
+    "description": "Search and sort Eloquent queries (and Filament tables) by a person's full name stored across two columns.",
     "keywords": [
         "PlinCode",
         "laravel",
-        "laravel-full-name"
+        "laravel-full-name",
+        "filament",
+        "eloquent",
+        "search",
+        "sort"
     ],
     "homepage": "https://github.com/plin-code/laravel-full-name",
     "license": "MIT",
@@ -17,13 +21,15 @@
     ],
     "require": {
         "php": "^8.4",
-        "spatie/laravel-package-tools": "^1.16",
-        "illuminate/contracts": "^11.0||^12.0||^13.0"
+        "illuminate/database": "^12.0 || ^13.0",
+        "illuminate/support": "^12.0 || ^13.0",
+        "spatie/laravel-package-tools": "^1.16"
     },
     "require-dev": {
+        "filament/tables": "^4.0 || ^5.0",
+        "larastan/larastan": "^3.0",
         "laravel/pint": "^1.14",
         "nunomaduro/collision": "^8.8",
-        "larastan/larastan": "^3.0",
         "orchestra/testbench": "^10.0.0||^9.0.0",
         "pestphp/pest": "^4.0",
         "pestphp/pest-plugin-arch": "^4.0",
@@ -34,14 +40,12 @@
     },
     "autoload": {
         "psr-4": {
-            "PlinCode\\LaravelFullName\\": "src/",
-            "PlinCode\\LaravelFullName\\Database\\Factories\\": "database/factories/"
+            "PlinCode\\LaravelFullName\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "PlinCode\\LaravelFullName\\Tests\\": "tests/",
-            "Workbench\\App\\": "workbench/app/"
+            "PlinCode\\LaravelFullName\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -63,10 +67,7 @@
         "laravel": {
             "providers": [
                 "PlinCode\\LaravelFullName\\LaravelFullNameServiceProvider"
-            ],
-            "aliases": {
-                "LaravelFullName": "PlinCode\\LaravelFullName\\Facades\\LaravelFullName"
-            }
+            ]
         }
     },
     "minimum-stability": "dev",
