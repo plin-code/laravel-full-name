@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Database\QueryException;
 use PlinCode\LaravelFullName\Exceptions\UnsupportedRelationException;
 use PlinCode\LaravelFullName\Support\FullNameMatcher;
 use PlinCode\LaravelFullName\Support\FullNameOptions;
@@ -110,6 +111,18 @@ it('skips duplicate joinSub when orderByFullName is called twice', function () {
     $joins = $query->getQuery()->joins ?? [];
 
     expect($joins)->toHaveCount(1);
+});
+
+it('raises a clear error when unqualified select collides with joined columns', function () {
+    Person::create(['first_name' => 'Anna', 'last_name' => 'Azzi']);
+    Booking::create(['person_id' => 1]);
+
+    $query = Booking::query()->select(['id']);
+
+    expect(function () use ($query) {
+        FullNameMatcher::applySort($query, 'asc', new FullNameOptions(relation: 'person'));
+        $query->get();
+    })->toThrow(QueryException::class);
 });
 
 it('preserves pre-existing select columns on the main query', function () {
