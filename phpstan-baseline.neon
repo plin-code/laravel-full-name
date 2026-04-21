@@ -1,0 +1,277 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Anonymous function should return Illuminate\\Database\\Eloquent\\Builder but returns mixed\.$#'
+			identifier: return.type
+			count: 2
+			path: src/Macros/FilamentColumnMacros.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\:\:orderByFullName\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Macros/FilamentColumnMacros.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\:\:searchFullName\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Macros/FilamentColumnMacros.php
+
+		-
+			message: '#^Cannot call method searchable\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Macros/FilamentColumnMacros.php
+
+		-
+			message: '#^Cannot call method sortable\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Macros/FilamentColumnMacros.php
+
+		-
+			message: '#^Undefined variable\: \$this$#'
+			identifier: variable.undefined
+			count: 2
+			path: src/Macros/FilamentColumnMacros.php
+
+		-
+			message: '#^Variable \$this in PHPDoc tag @var does not exist\.$#'
+			identifier: varTag.variableNotFound
+			count: 2
+			path: src/Macros/FilamentColumnMacros.php
+
+		-
+			message: '#^Parameter \#1 \$sql of method Illuminate\\Database\\Eloquent\\Builder\<TModel of Illuminate\\Database\\Eloquent\\Model\>\:\:orWhereRaw\(\) expects literal\-string, non\-falsy\-string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Support/FullNameMatcher.php
+
+		-
+			message: '#^Parameter \#1 \$sql of method Illuminate\\Database\\Eloquent\\Builder\<TModel of Illuminate\\Database\\Eloquent\\Model\>\:\:whereRaw\(\) expects Illuminate\\Contracts\\Database\\Query\\Expression\|literal\-string, non\-falsy\-string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Support/FullNameMatcher.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\:\:expect\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/ArchTest.php
+
+		-
+			message: '#^Cannot access property \$each on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: tests/ArchTest.php
+
+		-
+			message: '#^Cannot access property \$not on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: tests/ArchTest.php
+
+		-
+			message: '#^Cannot call method toBeUsed\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: tests/ArchTest.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<PlinCode\\LaravelFullName\\Tests\\Fixtures\\Person\>\:\:searchFullName\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Feature/EloquentSearchDirectTest.php
+
+		-
+			message: '#^Cannot call method all\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: tests/Feature/EloquentSearchDirectTest.php
+
+		-
+			message: '#^Cannot call method pluck\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: tests/Feature/EloquentSearchDirectTest.php
+
+		-
+			message: '#^Function applySearch\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Feature/EloquentSearchDirectTest.php
+
+		-
+			message: '#^Function applySearch\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Feature/EloquentSearchDirectTest.php
+
+		-
+			message: '#^Function seed\(\) has parameter \$names with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Feature/EloquentSearchDirectTest.php
+
+		-
+			message: '#^Function seed\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Feature/EloquentSearchDirectTest.php
+
+		-
+			message: '#^Parameter \#1 \$relation of class PlinCode\\LaravelFullName\\Support\\FullNameOptions constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Feature/EloquentSearchDirectTest.php
+
+		-
+			message: '#^Function applyBookingSearch\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Feature/EloquentSearchRelationTest.php
+
+		-
+			message: '#^Function sortedIds\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Feature/EloquentSortDirectTest.php
+
+		-
+			message: '#^Function sortedIds\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Feature/EloquentSortDirectTest.php
+
+		-
+			message: '#^Parameter \#1 \$relation of class PlinCode\\LaravelFullName\\Support\\FullNameOptions constructor expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Feature/EloquentSortDirectTest.php
+
+		-
+			message: '#^Cannot call method getAttributes\(\) on PlinCode\\LaravelFullName\\Tests\\Fixtures\\Booking\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: tests/Feature/EloquentSortRelationTest.php
+
+		-
+			message: '#^Function sortedBookingIds\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Feature/EloquentSortRelationTest.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<PlinCode\\LaravelFullName\\Tests\\Fixtures\\Booking\>\:\:orderByFullName\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/Feature/ErrorsTest.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<PlinCode\\LaravelFullName\\Tests\\Fixtures\\Booking\>\:\:searchFullName\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/Feature/ErrorsTest.php
+
+		-
+			message: '#^Cannot call method get\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 4
+			path: tests/Feature/ErrorsTest.php
+
+		-
+			message: '#^Call to an undefined method Filament\\Tables\\Columns\\TextColumn\:\:fullNameSearchable\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Feature/FilamentSearchableMacroTest.php
+
+		-
+			message: '#^Call to deprecated method setAccessible\(\) of class ReflectionProperty\.$#'
+			identifier: method.deprecated
+			count: 1
+			path: tests/Feature/FilamentSearchableMacroTest.php
+
+		-
+			message: '#^Parameter \#1 \$object of class ReflectionObject constructor expects object, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Feature/FilamentSearchableMacroTest.php
+
+		-
+			message: '#^Parameter \#1 \$object of method ReflectionProperty\:\:getValue\(\) expects object\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Feature/FilamentSearchableMacroTest.php
+
+		-
+			message: '#^Trying to invoke mixed but it''s not a callable\.$#'
+			identifier: callable.nonCallable
+			count: 1
+			path: tests/Feature/FilamentSearchableMacroTest.php
+
+		-
+			message: '#^Call to an undefined method Filament\\Tables\\Columns\\TextColumn\:\:fullNameSortable\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Feature/FilamentSortableMacroTest.php
+
+		-
+			message: '#^Call to deprecated method setAccessible\(\) of class ReflectionProperty\.$#'
+			identifier: method.deprecated
+			count: 1
+			path: tests/Feature/FilamentSortableMacroTest.php
+
+		-
+			message: '#^Parameter \#1 \$object of class ReflectionObject constructor expects object, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Feature/FilamentSortableMacroTest.php
+
+		-
+			message: '#^Parameter \#1 \$object of method ReflectionProperty\:\:getValue\(\) expects object\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Feature/FilamentSortableMacroTest.php
+
+		-
+			message: '#^Trying to invoke mixed but it''s not a callable\.$#'
+			identifier: callable.nonCallable
+			count: 1
+			path: tests/Feature/FilamentSortableMacroTest.php
+
+		-
+			message: '#^Method PlinCode\\LaravelFullName\\Tests\\Fixtures\\Booking\:\:items\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: tests/Fixtures/Booking.php
+
+		-
+			message: '#^Method PlinCode\\LaravelFullName\\Tests\\Fixtures\\Booking\:\:person\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: tests/Fixtures/Booking.php
+
+		-
+			message: '#^Call to an undefined method Pest\\PendingCalls\\TestCall\|Pest\\Support\\HigherOrderTapProxy\:\:markTestSkipped\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Integration/CrossDriverSqlTest.php
+
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 1
+			path: tests/Integration/CrossDriverSqlTest.php
+
+		-
+			message: '#^Cannot call method down\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: tests/TestCase.php
+
+		-
+			message: '#^Cannot call method up\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: tests/TestCase.php

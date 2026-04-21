@@ -4,7 +4,9 @@ namespace PlinCode\LaravelFullName\Support;
 
 use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Query\JoinClause;
 use PlinCode\LaravelFullName\Exceptions\InvalidSortDirectionException;
 use PlinCode\LaravelFullName\Exceptions\UnsupportedRelationException;
 
@@ -12,6 +14,12 @@ final class FullNameMatcher
 {
     public const LIKE_ESCAPE_CHAR = '!';
 
+    /**
+     * @template TModel of \Illuminate\Database\Eloquent\Model
+     *
+     * @param  Builder<TModel>  $query
+     * @return Builder<TModel>
+     */
     public static function applySearch(
         Builder $query,
         string $input,
@@ -38,6 +46,12 @@ final class FullNameMatcher
         return self::buildSearchWhere($query, $pattern, $options);
     }
 
+    /**
+     * @template TModel of \Illuminate\Database\Eloquent\Model
+     *
+     * @param  Builder<TModel>  $query
+     * @return Builder<TModel>
+     */
     public static function applySort(
         Builder $query,
         string $direction,
@@ -58,14 +72,23 @@ final class FullNameMatcher
             ->orderBy($options->firstNameColumn, $normalizedDirection);
     }
 
+    /**
+     * @template TModel of \Illuminate\Database\Eloquent\Model
+     *
+     * @param  Builder<TModel>  $query
+     * @return Builder<TModel>
+     */
     private static function applySortWithRelation(
         Builder $query,
         string $direction,
         FullNameOptions $options,
     ): Builder {
-        self::assertBelongsTo($query, $options->relation);
+        /** @var string $relationName */
+        $relationName = $options->relation;
+        self::assertBelongsTo($query, $relationName);
 
-        $relation = $query->getModel()->{$options->relation}();
+        /** @var BelongsTo<Model, Model> $relation */
+        $relation = $query->getModel()->{$relationName}();
         $related = $relation->getRelated();
         $mainTable = $query->getModel()->getTable();
         $relatedTable = $related->getTable();
@@ -95,8 +118,14 @@ final class FullNameMatcher
             ->orderBy("{$relatedTable}.{$options->firstNameColumn}", $direction);
     }
 
+    /**
+     * @template TModel of \Illuminate\Database\Eloquent\Model
+     *
+     * @param  Builder<TModel>  $query
+     */
     private static function alreadyJoined(Builder $query, string $table): bool
     {
+        /** @var array<JoinClause> $joins */
         $joins = $query->getQuery()->joins ?? [];
 
         foreach ($joins as $join) {
@@ -138,6 +167,12 @@ final class FullNameMatcher
         );
     }
 
+    /**
+     * @template TModel of \Illuminate\Database\Eloquent\Model
+     *
+     * @param  Builder<TModel>  $query
+     * @return Builder<TModel>
+     */
     private static function buildSearchWhere(
         Builder $query,
         string $pattern,
@@ -158,6 +193,11 @@ final class FullNameMatcher
         });
     }
 
+    /**
+     * @template TModel of \Illuminate\Database\Eloquent\Model
+     *
+     * @param  Builder<TModel>  $query
+     */
     private static function assertBelongsTo(Builder $query, string $relationName): void
     {
         $model = $query->getModel();
@@ -173,10 +213,11 @@ final class FullNameMatcher
         $relation = $model->{$relationName}();
 
         if (! $relation instanceof BelongsTo) {
+            $relationClass = is_object($relation) ? class_basename($relation) : gettype($relation);
             throw UnsupportedRelationException::forRelationType(
                 $relationName,
                 $modelClass,
-                class_basename($relation),
+                $relationClass,
             );
         }
     }

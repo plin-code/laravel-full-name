@@ -3,6 +3,7 @@
 namespace PlinCode\LaravelFullName\Macros;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use PlinCode\LaravelFullName\Support\FullNameMatcher;
 use PlinCode\LaravelFullName\Support\FullNameOptions;
 
@@ -16,7 +17,7 @@ final class EloquentBuilderMacros
             string $firstNameColumn = 'first_name',
             string $lastNameColumn = 'last_name',
         ) {
-            /** @var Builder $this */
+            /** @var Builder<Model> $this */
             return FullNameMatcher::applySearch(
                 $this,
                 $search,
@@ -34,7 +35,7 @@ final class EloquentBuilderMacros
             string $firstNameColumn = 'first_name',
             string $lastNameColumn = 'last_name',
         ) {
-            /** @var Builder $this */
+            /** @var Builder<Model> $this */
             return FullNameMatcher::applySort(
                 $this,
                 $direction,
