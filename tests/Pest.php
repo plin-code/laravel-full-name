@@ -1,0 +1,5 @@
+<?php
+
+use PlinCode\LaravelFullName\Tests\TestCase;
+
+uses(TestCase::class)->in(__DIR__);
