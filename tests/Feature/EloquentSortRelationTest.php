@@ -6,6 +6,7 @@ use PlinCode\LaravelFullName\Support\FullNameOptions;
 use PlinCode\LaravelFullName\Tests\Fixtures\Booking;
 use PlinCode\LaravelFullName\Tests\Fixtures\Person;
 
+/** @return array<int, mixed> */
 function sortedBookingIds(string $direction = 'asc'): array
 {
     $query = Booking::query();

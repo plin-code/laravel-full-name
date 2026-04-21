@@ -6,6 +6,7 @@ use PlinCode\LaravelFullName\Support\FullNameOptions;
 use PlinCode\LaravelFullName\Tests\Fixtures\Booking;
 use PlinCode\LaravelFullName\Tests\Fixtures\Person;
 
+/** @return array<int, mixed> */
 function applyBookingSearch(string $input, ?string $relation = 'person'): array
 {
     $query = Booking::query();

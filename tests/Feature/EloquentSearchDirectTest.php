@@ -4,6 +4,10 @@ use PlinCode\LaravelFullName\Support\FullNameMatcher;
 use PlinCode\LaravelFullName\Support\FullNameOptions;
 use PlinCode\LaravelFullName\Tests\Fixtures\Person;
 
+/**
+ * @param  array<string, mixed>  $options
+ * @return array<int, mixed>
+ */
 function applySearch(string $input, array $options = []): array
 {
     $query = Person::query();
@@ -16,6 +20,10 @@ function applySearch(string $input, array $options = []): array
     return $query->pluck('id')->all();
 }
 
+/**
+ * @param  array<string, array{string, string}>  $names
+ * @return array<string, mixed>
+ */
 function seed(array $names): array
 {
     $ids = [];

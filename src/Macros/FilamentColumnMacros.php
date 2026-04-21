@@ -14,7 +14,6 @@ final class FilamentColumnMacros
             string $firstNameColumn = 'first_name',
             string $lastNameColumn = 'last_name',
         ) {
-            /** @var TextColumn $this */
             return $this->searchable(
                 query: fn (Builder $query, string $search): Builder => $query->searchFullName($search, $relation, $firstNameColumn, $lastNameColumn),
             );
@@ -25,7 +24,6 @@ final class FilamentColumnMacros
             string $firstNameColumn = 'first_name',
             string $lastNameColumn = 'last_name',
         ) {
-            /** @var TextColumn $this */
             return $this->sortable(
                 query: fn (Builder $query, string $direction): Builder => $query->orderByFullName($direction, $relation, $firstNameColumn, $lastNameColumn),
             );

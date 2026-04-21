@@ -2,14 +2,15 @@
 
 pest()->group('integration');
 
+use PHPUnit\Framework\SkippedWithMessageException;
 use PlinCode\LaravelFullName\Support\FullNameMatcher;
 use PlinCode\LaravelFullName\Support\FullNameOptions;
 use PlinCode\LaravelFullName\Tests\Fixtures\Person;
 
 function withDriver(string $driver, Closure $setup): void
 {
-    if (env('LFN_INTEGRATION_DRIVER') !== $driver) {
-        test()->markTestSkipped("Driver {$driver} not configured for this run.");
+    if (($_ENV['LFN_INTEGRATION_DRIVER'] ?? null) !== $driver) {
+        throw new SkippedWithMessageException("Driver {$driver} not configured for this run.");
     }
 
     $setup();

@@ -15,11 +15,13 @@ class Booking extends Model
         'note',
     ];
 
+    /** @return BelongsTo<Person, $this> */
     public function person(): BelongsTo
     {
         return $this->belongsTo(Person::class, 'person_id');
     }
 
+    /** @return HasMany<BookingItem, $this> */
     public function items(): HasMany
     {
         return $this->hasMany(BookingItem::class, 'booking_id');

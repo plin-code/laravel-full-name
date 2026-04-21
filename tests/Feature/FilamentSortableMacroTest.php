@@ -13,7 +13,6 @@ it('registers a sortable query closure on TextColumn via fullNameSortable', func
 
     $reflection = new ReflectionObject($column);
     $property = $reflection->getProperty('sortQuery');
-    $property->setAccessible(true);
     $callback = $property->getValue($column);
 
     expect($callback)->toBeCallable();

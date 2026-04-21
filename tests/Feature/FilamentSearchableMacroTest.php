@@ -13,7 +13,6 @@ it('registers a searchable query closure on TextColumn via fullNameSearchable', 
 
     $reflection = new ReflectionObject($column);
     $property = $reflection->getProperty('searchQuery');
-    $property->setAccessible(true);
     $callback = $property->getValue($column);
 
     expect($callback)->toBeCallable();

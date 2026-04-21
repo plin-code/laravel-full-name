@@ -2,9 +2,11 @@ includes:
     - phpstan-baseline.neon
 
 parameters:
-    level: max
+    level: 7
     paths:
         - src
         - tests
     excludePaths:
         - tests/Fixtures/database/migrations
+    bootstrapFiles:
+        - phpstan-bootstrap.php

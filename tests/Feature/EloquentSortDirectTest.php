@@ -5,6 +5,10 @@ use PlinCode\LaravelFullName\Support\FullNameMatcher;
 use PlinCode\LaravelFullName\Support\FullNameOptions;
 use PlinCode\LaravelFullName\Tests\Fixtures\Person;
 
+/**
+ * @param  array<string, mixed>  $options
+ * @return array<int, mixed>
+ */
 function sortedIds(string $direction, array $options = []): array
 {
     $query = Person::query();
