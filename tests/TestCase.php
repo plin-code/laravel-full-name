@@ -13,7 +13,9 @@ class TestCase extends Orchestra
         parent::setUp();
 
         foreach (File::allFiles(__DIR__.'/Fixtures/database/migrations') as $migration) {
-            (include $migration->getRealPath())->up();
+            $instance = include $migration->getRealPath();
+            $instance->down();
+            $instance->up();
         }
     }
 
