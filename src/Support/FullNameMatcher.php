@@ -2,6 +2,7 @@
 
 namespace PlinCode\LaravelFullName\Support;
 
+use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use PlinCode\LaravelFullName\Exceptions\InvalidSortDirectionException;
@@ -62,7 +63,50 @@ final class FullNameMatcher
         string $direction,
         FullNameOptions $options,
     ): Builder {
-        throw new \RuntimeException('applySort via relation is not implemented yet.');
+        self::assertBelongsTo($query, $options->relation);
+
+        $relation = $query->getModel()->{$options->relation}();
+        $related = $relation->getRelated();
+        $mainTable = $query->getModel()->getTable();
+        $relatedTable = $related->getTable();
+        $foreignKey = $relation->getForeignKeyName();
+        $ownerKey = $relation->getOwnerKeyName();
+
+        if (! self::alreadyJoined($query, $relatedTable)) {
+            $query->joinSub(
+                $related->newQuery()->select([
+                    "{$relatedTable}.{$ownerKey}",
+                    "{$relatedTable}.{$options->firstNameColumn}",
+                    "{$relatedTable}.{$options->lastNameColumn}",
+                ]),
+                $relatedTable,
+                "{$mainTable}.{$foreignKey}",
+                '=',
+                "{$relatedTable}.{$ownerKey}",
+            );
+            $query->select("{$mainTable}.*");
+        }
+
+        return $query
+            ->orderBy("{$relatedTable}.{$options->lastNameColumn}", $direction)
+            ->orderBy("{$relatedTable}.{$options->firstNameColumn}", $direction);
+    }
+
+    private static function alreadyJoined(Builder $query, string $table): bool
+    {
+        $joins = $query->getQuery()->joins ?? [];
+
+        foreach ($joins as $join) {
+            $joinTable = $join->table instanceof Expression
+                ? (string) $join->table->getValue($query->getQuery()->grammar)
+                : (string) $join->table;
+
+            if ($joinTable === $table || str_ends_with($joinTable, "as \"{$table}\"") || str_ends_with($joinTable, "as `{$table}`")) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static function normalize(string $input): string
