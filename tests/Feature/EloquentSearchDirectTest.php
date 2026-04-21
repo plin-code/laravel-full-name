@@ -149,3 +149,12 @@ it('is unicode-safe', function () {
 
     expect(applySearch('maría rossi'))->toBe([$ids['maria']]);
 });
+
+it('exposes searchFullName as an Eloquent Builder macro', function () {
+    $mario = Person::create(['first_name' => 'Mario', 'last_name' => 'Rossi'])->id;
+    Person::create(['first_name' => 'Luigi', 'last_name' => 'Verdi']);
+
+    $results = Person::query()->searchFullName('mario rossi')->pluck('id')->all();
+
+    expect($results)->toBe([$mario]);
+});

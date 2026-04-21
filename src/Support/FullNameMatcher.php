@@ -36,6 +36,14 @@ final class FullNameMatcher
         return self::buildSearchWhere($query, $pattern, $options);
     }
 
+    public static function applySort(
+        Builder $query,
+        string $direction,
+        FullNameOptions $options,
+    ): Builder {
+        throw new \RuntimeException('applySort is not implemented yet.');
+    }
+
     public static function normalize(string $input): string
     {
         $collapsed = preg_replace('/\s+/u', ' ', $input);
