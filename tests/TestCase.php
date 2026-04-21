@@ -9,6 +9,7 @@ use PlinCode\LaravelFullName\LaravelFullNameServiceProvider;
 
 class TestCase extends Orchestra
 {
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -26,6 +27,7 @@ class TestCase extends Orchestra
         }
     }
 
+    #[\Override]
     protected function getPackageProviders($app): array
     {
         return [
@@ -33,6 +35,7 @@ class TestCase extends Orchestra
         ];
     }
 
+    #[\Override]
     public function getEnvironmentSetUp($app): void
     {
         $driver = $_ENV['LFN_INTEGRATION_DRIVER'] ?? null;

@@ -12,7 +12,7 @@ use PlinCode\LaravelFullName\Exceptions\UnsupportedRelationException;
 
 final class FullNameMatcher
 {
-    public const LIKE_ESCAPE_CHAR = '!';
+    public const string LIKE_ESCAPE_CHAR = '!';
 
     /**
      * @template TModel of \Illuminate\Database\Eloquent\Model
@@ -160,7 +160,7 @@ final class FullNameMatcher
             );
         }
 
-        $trimmed = trim($collapsed);
+        $trimmed = mb_trim($collapsed);
 
         return mb_strtolower($trimmed, 'UTF-8');
     }

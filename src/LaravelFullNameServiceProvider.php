@@ -10,11 +10,13 @@ use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class LaravelFullNameServiceProvider extends PackageServiceProvider
 {
+    #[\Override]
     public function configurePackage(Package $package): void
     {
         $package->name('laravel-full-name');
     }
 
+    #[\Override]
     public function packageBooted(): void
     {
         EloquentBuilderMacros::register();
