@@ -2,11 +2,21 @@
 
 namespace PlinCode\LaravelFullName\Tests;
 
+use Illuminate\Support\Facades\File;
 use Orchestra\Testbench\TestCase as Orchestra;
 use PlinCode\LaravelFullName\LaravelFullNameServiceProvider;
 
 class TestCase extends Orchestra
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        foreach (File::allFiles(__DIR__.'/Fixtures/database/migrations') as $migration) {
+            (include $migration->getRealPath())->up();
+        }
+    }
+
     protected function getPackageProviders($app): array
     {
         return [
