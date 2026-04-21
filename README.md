@@ -69,6 +69,8 @@ TextColumn::make('full_name')
     );
 ```
 
+The complete API surface lives in [docs/api.md](docs/api.md).
+
 ## Performance considerations
 
 The matching strategy uses `LOWER(CONCAT(COALESCE(first, ''), ' ', COALESCE(last, '')))` which prevents btree indexes from being used on `first_name` or `last_name`. On tables up to a few hundred thousand rows this is typically acceptable for admin panel search. For very large tables, pair this package with a dedicated search engine (Meilisearch, Scout, Algolia) and use this package only for sort.
@@ -91,6 +93,8 @@ The core uses `LOWER(CONCAT(COALESCE(first, ''), ' ', COALESCE(last, '')))` matc
 | `bianchi mario` | first_name=`'Mario'`, last_name=`'Rossi Bianchi'` | yes |
 
 The asymmetry between single token and multi token queries is intentional and emerges from the SQL pattern. Single token queries use substring match, so `maria` matches records containing `maria` anywhere in either column. Multi token queries require the tokens to appear contiguously with the separating space between them in the concatenated `first last` or `last first` form, so `maria rossi` matches `Maria Rossi` but not `Marianna Rossi` (the separator space is not present between `maria` and `rossi` in the concatenation). Single token queries are exploratory (the user may be typing a prefix), multi token queries target a specific person.
+
+See [docs/conventions.md](docs/conventions.md) for the rationale behind the naming split between the Eloquent and Filament layers.
 
 ## Limitations
 

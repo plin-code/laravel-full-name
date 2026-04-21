@@ -1,12 +1,13 @@
 {
     "name": "plin-code/laravel-full-name",
-    "description": "Search and sort Eloquent queries (and Filament tables) by a person's full name stored across two columns.",
+    "description": "Search and sort Eloquent queries and Filament tables by a person's full name across first_name and last_name columns, with BelongsTo relation support and multi-token matching.",
     "keywords": [
-        "PlinCode",
         "laravel",
-        "laravel-full-name",
         "filament",
+        "filament-tables",
         "eloquent",
+        "full-name",
+        "name-search",
         "search",
         "sort"
     ],
