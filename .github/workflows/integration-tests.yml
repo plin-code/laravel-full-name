@@ -1,0 +1,88 @@
+name: integration-tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [labeled, synchronize]
+
+jobs:
+  mysql:
+    if: github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'integration')
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: testing
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: dom, curl, libxml, mbstring, zip, pdo, pdo_mysql, bcmath, intl
+          coverage: none
+
+      - run: composer install --no-interaction --prefer-dist
+
+      - name: Run integration tests on MySQL
+        run: vendor/bin/pest --group=integration
+        env:
+          LFN_INTEGRATION_DRIVER: mysql
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: testing
+          DB_USERNAME: root
+          DB_PASSWORD: root
+
+  pgsql:
+    if: github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'integration')
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: testing
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: dom, curl, libxml, mbstring, zip, pdo, pdo_pgsql, bcmath, intl
+          coverage: none
+
+      - run: composer install --no-interaction --prefer-dist
+
+      - name: Run integration tests on PostgreSQL
+        run: vendor/bin/pest --group=integration
+        env:
+          LFN_INTEGRATION_DRIVER: pgsql
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: testing
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
