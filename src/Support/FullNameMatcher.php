@@ -21,12 +21,14 @@ final class FullNameMatcher
         return mb_strtolower($trimmed, 'UTF-8');
     }
 
-    public static function escapeLike(string $normalized): string
+    public static function escapeLike(string $value): string
     {
+        $escape = self::LIKE_ESCAPE_CHAR;
+
         return str_replace(
-            ['!', '%', '_'],
-            ['!!', '!%', '!_'],
-            $normalized,
+            [$escape, '%', '_'],
+            [$escape.$escape, $escape.'%', $escape.'_'],
+            $value,
         );
     }
 }
