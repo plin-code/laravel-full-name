@@ -3,6 +3,8 @@
 namespace PlinCode\LaravelFullName\Support;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use PlinCode\LaravelFullName\Exceptions\UnsupportedRelationException;
 
 final class FullNameMatcher
 {
@@ -22,19 +24,16 @@ final class FullNameMatcher
         $escaped = self::escapeLike($normalized);
         $pattern = '%'.$escaped.'%';
 
-        return $query->where(function (Builder $sub) use ($pattern, $options) {
-            $first = $options->firstNameColumn;
-            $last = $options->lastNameColumn;
-            $escape = self::LIKE_ESCAPE_CHAR;
+        if ($options->relation !== null) {
+            self::assertBelongsTo($query, $options->relation);
 
-            $sub->whereRaw(
-                "LOWER(CONCAT(COALESCE({$first}, ''), ' ', COALESCE({$last}, ''))) LIKE ? ESCAPE '{$escape}'",
-                [$pattern],
-            )->orWhereRaw(
-                "LOWER(CONCAT(COALESCE({$last}, ''), ' ', COALESCE({$first}, ''))) LIKE ? ESCAPE '{$escape}'",
-                [$pattern],
+            return $query->whereHas(
+                $options->relation,
+                fn (Builder $sub) => self::buildSearchWhere($sub, $pattern, $options->withoutRelation()),
             );
-        });
+        }
+
+        return self::buildSearchWhere($query, $pattern, $options);
     }
 
     public static function normalize(string $input): string
@@ -61,5 +60,48 @@ final class FullNameMatcher
             [$escape.$escape, $escape.'%', $escape.'_'],
             $value,
         );
+    }
+
+    private static function buildSearchWhere(
+        Builder $query,
+        string $pattern,
+        FullNameOptions $options,
+    ): Builder {
+        $first = $options->firstNameColumn;
+        $last = $options->lastNameColumn;
+        $escape = self::LIKE_ESCAPE_CHAR;
+
+        return $query->where(function (Builder $sub) use ($pattern, $first, $last, $escape) {
+            $sub->whereRaw(
+                "LOWER(CONCAT(COALESCE({$first}, ''), ' ', COALESCE({$last}, ''))) LIKE ? ESCAPE '{$escape}'",
+                [$pattern],
+            )->orWhereRaw(
+                "LOWER(CONCAT(COALESCE({$last}, ''), ' ', COALESCE({$first}, ''))) LIKE ? ESCAPE '{$escape}'",
+                [$pattern],
+            );
+        });
+    }
+
+    private static function assertBelongsTo(Builder $query, string $relationName): void
+    {
+        $model = $query->getModel();
+        $modelClass = $model::class;
+
+        if (! method_exists($model, $relationName)) {
+            throw UnsupportedRelationException::forMissingRelation(
+                $relationName,
+                $modelClass,
+            );
+        }
+
+        $relation = $model->{$relationName}();
+
+        if (! $relation instanceof BelongsTo) {
+            throw UnsupportedRelationException::forRelationType(
+                $relationName,
+                $modelClass,
+                class_basename($relation),
+            );
+        }
     }
 }
