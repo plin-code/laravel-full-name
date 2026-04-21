@@ -17,7 +17,7 @@ function sortedIds(string $direction, array $options = []): array
     return $query->pluck('id')->all();
 }
 
-it('orders ascending by last_name then first_name', function () {
+it('orders ascending by last_name then first_name', function (): void {
     $b = Person::create(['first_name' => 'Anna', 'last_name' => 'Bianchi'])->id;
     $a1 = Person::create(['first_name' => 'Giulia', 'last_name' => 'Azzi'])->id;
     $a2 = Person::create(['first_name' => 'Anna', 'last_name' => 'Azzi'])->id;
@@ -25,7 +25,7 @@ it('orders ascending by last_name then first_name', function () {
     expect(sortedIds('asc'))->toBe([$a2, $a1, $b]);
 });
 
-it('orders descending', function () {
+it('orders descending', function (): void {
     $b = Person::create(['first_name' => 'Anna', 'last_name' => 'Bianchi'])->id;
     $a1 = Person::create(['first_name' => 'Giulia', 'last_name' => 'Azzi'])->id;
     $a2 = Person::create(['first_name' => 'Anna', 'last_name' => 'Azzi'])->id;
@@ -33,18 +33,18 @@ it('orders descending', function () {
     expect(sortedIds('desc'))->toBe([$b, $a1, $a2]);
 });
 
-it('accepts uppercase direction', function () {
+it('accepts uppercase direction', function (): void {
     Person::create(['first_name' => 'Anna', 'last_name' => 'Azzi']);
 
-    expect(fn () => sortedIds('ASC'))->not->toThrow(InvalidSortDirectionException::class);
+    expect(fn (): array => sortedIds('ASC'))->not->toThrow(InvalidSortDirectionException::class);
 });
 
-it('throws on invalid direction', function () {
-    expect(fn () => sortedIds('sideways'))
+it('throws on invalid direction', function (): void {
+    expect(fn (): array => sortedIds('sideways'))
         ->toThrow(InvalidSortDirectionException::class, "'asc' or 'desc'");
 });
 
-it('supports custom column names', function () {
+it('supports custom column names', function (): void {
     $b = Person::create(['given_name' => 'Anna', 'family_name' => 'Bianchi'])->id;
     $a = Person::create(['given_name' => 'Giulia', 'family_name' => 'Azzi'])->id;
 

@@ -3,7 +3,7 @@
 use Filament\Tables\Columns\TextColumn;
 use PlinCode\LaravelFullName\Tests\Fixtures\Person;
 
-it('registers a searchable query closure on TextColumn via fullNameSearchable', function () {
+it('registers a searchable query closure on TextColumn via fullNameSearchable', function (): void {
     Person::create(['first_name' => 'Mario', 'last_name' => 'Rossi']);
     Person::create(['first_name' => 'Luigi', 'last_name' => 'Verdi']);
 

@@ -39,7 +39,7 @@ final class FullNameMatcher
 
             return $query->whereHas(
                 $options->relation,
-                fn (Builder $sub) => self::buildSearchWhere($sub, $pattern, $options->withoutRelation()),
+                fn (Builder $sub): Builder => self::buildSearchWhere($sub, $pattern, $options->withoutRelation()),
             );
         }
 
@@ -191,7 +191,7 @@ final class FullNameMatcher
         $last = $options->lastNameColumn;
         $escape = self::LIKE_ESCAPE_CHAR;
 
-        return $query->where(function (Builder $sub) use ($pattern, $first, $last, $escape) {
+        return $query->where(function (Builder $sub) use ($pattern, $first, $last, $escape): void {
             $sub->whereRaw(
                 "LOWER(CONCAT(COALESCE({$first}, ''), ' ', COALESCE({$last}, ''))) LIKE ? ESCAPE '{$escape}'",
                 [$pattern],

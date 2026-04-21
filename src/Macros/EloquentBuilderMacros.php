@@ -16,7 +16,7 @@ final class EloquentBuilderMacros
             ?string $relation = null,
             string $firstNameColumn = 'first_name',
             string $lastNameColumn = 'last_name',
-        ) {
+        ): Builder {
             /** @var Builder<Model> $this */
             return FullNameMatcher::applySearch(
                 $this,
@@ -34,7 +34,7 @@ final class EloquentBuilderMacros
             ?string $relation = null,
             string $firstNameColumn = 'first_name',
             string $lastNameColumn = 'last_name',
-        ) {
+        ): Builder {
             /** @var Builder<Model> $this */
             return FullNameMatcher::applySort(
                 $this,

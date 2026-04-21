@@ -19,7 +19,7 @@ function applyBookingSearch(string $input, ?string $relation = 'person'): array
     return $query->pluck('id')->all();
 }
 
-it('matches bookings via the BelongsTo person relation', function () {
+it('matches bookings via the BelongsTo person relation', function (): void {
     $mario = Person::create(['first_name' => 'Mario', 'last_name' => 'Rossi']);
     $luigi = Person::create(['first_name' => 'Luigi', 'last_name' => 'Verdi']);
 
@@ -29,18 +29,18 @@ it('matches bookings via the BelongsTo person relation', function () {
     expect(applyBookingSearch('mario rossi'))->toBe([$marioBooking]);
 });
 
-it('does not match bookings with null person_id', function () {
+it('does not match bookings with null person_id', function (): void {
     Booking::create(['person_id' => null, 'note' => 'orphan']);
 
     expect(applyBookingSearch('mario'))->toBe([]);
 });
 
-it('throws on missing relation', function () {
-    expect(fn () => applyBookingSearch('mario', relation: 'totallyMadeUp'))
+it('throws on missing relation', function (): void {
+    expect(fn (): array => applyBookingSearch('mario', relation: 'totallyMadeUp'))
         ->toThrow(UnsupportedRelationException::class, "Relation 'totallyMadeUp' is not defined");
 });
 
-it('throws on non-BelongsTo relation', function () {
-    expect(fn () => applyBookingSearch('mario', relation: 'items'))
+it('throws on non-BelongsTo relation', function (): void {
+    expect(fn (): array => applyBookingSearch('mario', relation: 'items'))
         ->toThrow(UnsupportedRelationException::class, 'must be BelongsTo');
 });

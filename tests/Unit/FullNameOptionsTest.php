@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 use PlinCode\LaravelFullName\Support\FullNameOptions;
 
-it('uses first_name and last_name as defaults', function () {
+it('uses first_name and last_name as defaults', function (): void {
     $options = new FullNameOptions;
 
     expect($options->relation)->toBeNull()
@@ -10,7 +12,7 @@ it('uses first_name and last_name as defaults', function () {
         ->and($options->lastNameColumn)->toBe('last_name');
 });
 
-it('accepts custom column names and relation', function () {
+it('accepts custom column names and relation', function (): void {
     $options = new FullNameOptions(
         relation: 'user',
         firstNameColumn: 'given_name',
@@ -22,7 +24,7 @@ it('accepts custom column names and relation', function () {
         ->and($options->lastNameColumn)->toBe('family_name');
 });
 
-it('clones without relation preserving columns', function () {
+it('clones without relation preserving columns', function (): void {
     $options = new FullNameOptions(
         relation: 'user',
         firstNameColumn: 'given_name',

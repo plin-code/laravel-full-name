@@ -17,7 +17,7 @@ dataset('readme_matrix', [
     'multi cognome reversed' => ['bianchi mario', ['Mario', 'Rossi Bianchi'], true],
 ]);
 
-it('matches the README behavior matrix', function (string $query, array $record, bool $expected) {
+it('matches the README behavior matrix', function (string $query, array $record, bool $expected): void {
     [$first, $last] = $record;
     $person = Person::create(['first_name' => $first, 'last_name' => $last]);
 

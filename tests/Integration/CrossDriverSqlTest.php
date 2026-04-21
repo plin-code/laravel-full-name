@@ -21,8 +21,8 @@ dataset('drivers', [
     'pgsql' => ['pgsql'],
 ]);
 
-it('matches single token across drivers', function (string $driver) {
-    withDriver($driver, function () {
+it('matches single token across drivers', function (string $driver): void {
+    withDriver($driver, function (): void {
         Person::create(['first_name' => 'Mario', 'last_name' => 'Rossi']);
         Person::create(['first_name' => 'Luigi', 'last_name' => 'Verdi']);
 
@@ -33,8 +33,8 @@ it('matches single token across drivers', function (string $driver) {
     });
 })->with('drivers');
 
-it('matches multi token across drivers', function (string $driver) {
-    withDriver($driver, function () {
+it('matches multi token across drivers', function (string $driver): void {
+    withDriver($driver, function (): void {
         Person::create(['first_name' => 'Mario', 'last_name' => 'Rossi']);
         Person::create(['first_name' => 'Marianna', 'last_name' => 'Rossi']);
 
@@ -45,8 +45,8 @@ it('matches multi token across drivers', function (string $driver) {
     });
 })->with('drivers');
 
-it('escapes wildcards across drivers', function (string $driver) {
-    withDriver($driver, function () {
+it('escapes wildcards across drivers', function (string $driver): void {
+    withDriver($driver, function (): void {
         Person::create(['first_name' => '50%', 'last_name' => 'Sconto']);
         Person::create(['first_name' => 'Mario', 'last_name' => 'Rossi']);
 
@@ -57,8 +57,8 @@ it('escapes wildcards across drivers', function (string $driver) {
     });
 })->with('drivers');
 
-it('lowercases unicode across drivers', function (string $driver) {
-    withDriver($driver, function () {
+it('lowercases unicode across drivers', function (string $driver): void {
+    withDriver($driver, function (): void {
         Person::create(['first_name' => 'María', 'last_name' => 'Rossi']);
 
         $query = Person::query();

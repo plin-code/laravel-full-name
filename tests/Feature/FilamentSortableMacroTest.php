@@ -3,7 +3,7 @@
 use Filament\Tables\Columns\TextColumn;
 use PlinCode\LaravelFullName\Tests\Fixtures\Person;
 
-it('registers a sortable query closure on TextColumn via fullNameSortable', function () {
+it('registers a sortable query closure on TextColumn via fullNameSortable', function (): void {
     $bianchi = Person::create(['first_name' => 'Anna', 'last_name' => 'Bianchi'])->id;
     $azzi = Person::create(['first_name' => 'Anna', 'last_name' => 'Azzi'])->id;
 

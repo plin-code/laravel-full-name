@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\QueryException;
 use PlinCode\LaravelFullName\Exceptions\UnsupportedRelationException;
 use PlinCode\LaravelFullName\Support\FullNameMatcher;
@@ -20,7 +21,7 @@ function sortedBookingIds(string $direction = 'asc'): array
     return $query->pluck('id')->all();
 }
 
-it('orders bookings by related person full name ascending', function () {
+it('orders bookings by related person full name ascending', function (): void {
     $bianchi = Person::create(['first_name' => 'Anna', 'last_name' => 'Bianchi']);
     $azziAnna = Person::create(['first_name' => 'Anna', 'last_name' => 'Azzi']);
     $azziGiulia = Person::create(['first_name' => 'Giulia', 'last_name' => 'Azzi']);
@@ -32,7 +33,7 @@ it('orders bookings by related person full name ascending', function () {
     expect(sortedBookingIds('asc'))->toBe([$a2, $a1, $b]);
 });
 
-it('orders bookings descending', function () {
+it('orders bookings descending', function (): void {
     $bianchi = Person::create(['first_name' => 'Anna', 'last_name' => 'Bianchi']);
     $azzi = Person::create(['first_name' => 'Anna', 'last_name' => 'Azzi']);
 
@@ -42,7 +43,7 @@ it('orders bookings descending', function () {
     expect(sortedBookingIds('desc'))->toBe([$b, $a]);
 });
 
-it('does not duplicate rows on the main table', function () {
+it('does not duplicate rows on the main table', function (): void {
     $a = Person::create(['first_name' => 'Anna', 'last_name' => 'Azzi']);
     $b = Person::create(['first_name' => 'Giulia', 'last_name' => 'Bianchi']);
 
@@ -52,7 +53,7 @@ it('does not duplicate rows on the main table', function () {
     expect(sortedBookingIds())->toHaveCount(2);
 });
 
-it('excludes soft-deleted related records', function () {
+it('excludes soft-deleted related records', function (): void {
     $alive = Person::create(['first_name' => 'Anna', 'last_name' => 'Azzi']);
     $deleted = Person::create(['first_name' => 'Carlo', 'last_name' => 'Bianchi']);
     $deleted->delete();
@@ -63,7 +64,7 @@ it('excludes soft-deleted related records', function () {
     expect(sortedBookingIds())->toBe([$aliveBooking]);
 });
 
-it('is idempotent on repeated calls', function () {
+it('is idempotent on repeated calls', function (): void {
     $a = Person::create(['first_name' => 'Anna', 'last_name' => 'Azzi']);
     $b = Person::create(['first_name' => 'Giulia', 'last_name' => 'Bianchi']);
 
@@ -77,27 +78,27 @@ it('is idempotent on repeated calls', function () {
     expect($query->get())->toHaveCount(2);
 });
 
-it('throws on non-BelongsTo relation for sort', function () {
+it('throws on non-BelongsTo relation for sort', function (): void {
     $query = Booking::query();
 
-    expect(fn () => FullNameMatcher::applySort(
+    expect(fn (): Builder => FullNameMatcher::applySort(
         $query,
         'asc',
         new FullNameOptions(relation: 'items'),
     ))->toThrow(UnsupportedRelationException::class, 'must be BelongsTo');
 });
 
-it('throws on missing relation for sort', function () {
+it('throws on missing relation for sort', function (): void {
     $query = Booking::query();
 
-    expect(fn () => FullNameMatcher::applySort(
+    expect(fn (): Builder => FullNameMatcher::applySort(
         $query,
         'asc',
         new FullNameOptions(relation: 'totallyMadeUp'),
     ))->toThrow(UnsupportedRelationException::class, 'is not defined');
 });
 
-it('skips duplicate joinSub when orderByFullName is called twice', function () {
+it('skips duplicate joinSub when orderByFullName is called twice', function (): void {
     $a = Person::create(['first_name' => 'Anna', 'last_name' => 'Azzi']);
     $b = Person::create(['first_name' => 'Giulia', 'last_name' => 'Bianchi']);
 
@@ -113,19 +114,19 @@ it('skips duplicate joinSub when orderByFullName is called twice', function () {
     expect($joins)->toHaveCount(1);
 });
 
-it('raises a clear error when unqualified select collides with joined columns', function () {
+it('raises a clear error when unqualified select collides with joined columns', function (): void {
     Person::create(['first_name' => 'Anna', 'last_name' => 'Azzi']);
     Booking::create(['person_id' => 1]);
 
     $query = Booking::query()->select(['id']);
 
-    expect(function () use ($query) {
+    expect(function () use ($query): void {
         FullNameMatcher::applySort($query, 'asc', new FullNameOptions(relation: 'person'));
         $query->get();
     })->toThrow(QueryException::class);
 });
 
-it('preserves pre-existing select columns on the main query', function () {
+it('preserves pre-existing select columns on the main query', function (): void {
     $alice = Person::create(['first_name' => 'Alice', 'last_name' => 'Smith']);
     $bob = Person::create(['first_name' => 'Bob', 'last_name' => 'Jones']);
 

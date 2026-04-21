@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PlinCode\LaravelFullName;
 
 use Filament\Tables\Columns\Column;

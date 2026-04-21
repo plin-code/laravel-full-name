@@ -37,14 +37,14 @@ function seed(array $names): array
     return $ids;
 }
 
-it('returns the query unchanged on empty input', function () {
+it('returns the query unchanged on empty input', function (): void {
     $ids = seed(['mario' => ['Mario', 'Rossi']]);
 
     expect(applySearch(''))->toContain($ids['mario']);
     expect(applySearch('   '))->toContain($ids['mario']);
 });
 
-it('matches a single token against first_name', function () {
+it('matches a single token against first_name', function (): void {
     $ids = seed([
         'mario' => ['Mario', 'Rossi'],
         'luigi' => ['Luigi', 'Verdi'],
@@ -53,7 +53,7 @@ it('matches a single token against first_name', function () {
     expect(applySearch('mario'))->toBe([$ids['mario']]);
 });
 
-it('matches a single token against last_name', function () {
+it('matches a single token against last_name', function (): void {
     $ids = seed([
         'mario' => ['Mario', 'Rossi'],
         'luigi' => ['Luigi', 'Verdi'],
@@ -62,7 +62,7 @@ it('matches a single token against last_name', function () {
     expect(applySearch('verdi'))->toBe([$ids['luigi']]);
 });
 
-it('matches a single token as a substring', function () {
+it('matches a single token as a substring', function (): void {
     $ids = seed([
         'marianna' => ['Marianna', 'Rossi'],
     ]);
@@ -71,7 +71,7 @@ it('matches a single token as a substring', function () {
     expect(applySearch('mari'))->toBe([$ids['marianna']]);
 });
 
-it('matches first then last name multi token', function () {
+it('matches first then last name multi token', function (): void {
     $ids = seed([
         'mario' => ['Mario', 'Rossi'],
         'marianna' => ['Marianna', 'Rossi'],
@@ -80,7 +80,7 @@ it('matches first then last name multi token', function () {
     expect(applySearch('mario rossi'))->toBe([$ids['mario']]);
 });
 
-it('does not match multi token across word boundary', function () {
+it('does not match multi token across word boundary', function (): void {
     seed([
         'marianna' => ['Marianna', 'Rossi'],
     ]);
@@ -88,7 +88,7 @@ it('does not match multi token across word boundary', function () {
     expect(applySearch('maria rossi'))->toBe([]);
 });
 
-it('matches reversed last first multi token', function () {
+it('matches reversed last first multi token', function (): void {
     $ids = seed([
         'mario' => ['Mario', 'Rossi'],
     ]);
@@ -96,7 +96,7 @@ it('matches reversed last first multi token', function () {
     expect(applySearch('rossi mario'))->toBe([$ids['mario']]);
 });
 
-it('matches composite italian multi-name', function () {
+it('matches composite italian multi-name', function (): void {
     $ids = seed([
         'mario' => ['Mario Giovanni', 'Rossi'],
     ]);
@@ -105,7 +105,7 @@ it('matches composite italian multi-name', function () {
     expect(applySearch('rossi mario giovanni'))->toBe([$ids['mario']]);
 });
 
-it('matches composite italian multi-cognome', function () {
+it('matches composite italian multi-cognome', function (): void {
     $ids = seed([
         'mario' => ['Mario', 'Rossi Bianchi'],
     ]);
@@ -114,7 +114,7 @@ it('matches composite italian multi-cognome', function () {
     expect(applySearch('rossi bianchi mario'))->toBe([$ids['mario']]);
 });
 
-it('escapes percent wildcards in input', function () {
+it('escapes percent wildcards in input', function (): void {
     $ids = seed([
         'sconto' => ['50%', 'Sconto'],
         'normal' => ['Mario', 'Rossi'],
@@ -123,7 +123,7 @@ it('escapes percent wildcards in input', function () {
     expect(applySearch('50%'))->toBe([$ids['sconto']]);
 });
 
-it('escapes underscore wildcards in input', function () {
+it('escapes underscore wildcards in input', function (): void {
     $ids = seed([
         'underscore' => ['foo_bar', 'Baz'],
         'normal' => ['Mario', 'Rossi'],
@@ -132,13 +132,13 @@ it('escapes underscore wildcards in input', function () {
     expect(applySearch('foo_bar'))->toBe([$ids['underscore']]);
 });
 
-it('treats null columns as empty strings', function () {
+it('treats null columns as empty strings', function (): void {
     $marioNoLast = Person::create(['first_name' => 'Mario', 'last_name' => null])->id;
 
     expect(applySearch('mario'))->toContain($marioNoLast);
 });
 
-it('supports custom column names', function () {
+it('supports custom column names', function (): void {
     $person = Person::create([
         'given_name' => 'Maria',
         'family_name' => 'Bianchi',
@@ -150,7 +150,7 @@ it('supports custom column names', function () {
     ]))->toBe([$person->id]);
 });
 
-it('is unicode-safe', function () {
+it('is unicode-safe', function (): void {
     $ids = seed([
         'maria' => ['María', 'Rossi'],
     ]);
@@ -158,7 +158,7 @@ it('is unicode-safe', function () {
     expect(applySearch('maría rossi'))->toBe([$ids['maria']]);
 });
 
-it('exposes searchFullName as an Eloquent Builder macro', function () {
+it('exposes searchFullName as an Eloquent Builder macro', function (): void {
     $mario = Person::create(['first_name' => 'Mario', 'last_name' => 'Rossi'])->id;
     Person::create(['first_name' => 'Luigi', 'last_name' => 'Verdi']);
 
