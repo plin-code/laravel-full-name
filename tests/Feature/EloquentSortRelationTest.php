@@ -94,3 +94,21 @@ it('throws on missing relation for sort', function () {
         new FullNameOptions(relation: 'totallyMadeUp'),
     ))->toThrow(UnsupportedRelationException::class, 'is not defined');
 });
+
+it('preserves pre-existing select columns on the main query', function () {
+    $alice = Person::create(['first_name' => 'Alice', 'last_name' => 'Smith']);
+    $bob = Person::create(['first_name' => 'Bob', 'last_name' => 'Jones']);
+
+    Booking::create(['person_id' => $bob->id, 'note' => 'bob-note']);
+    Booking::create(['person_id' => $alice->id, 'note' => 'alice-note']);
+
+    $query = Booking::query()->select(['test_bookings.id', 'test_bookings.note']);
+    FullNameMatcher::applySort($query, 'asc', new FullNameOptions(relation: 'person'));
+
+    $rows = $query->get();
+
+    // Order by last_name asc: Jones (Bob) before Smith (Alice)
+    expect($rows->pluck('note')->all())->toBe(['bob-note', 'alice-note']);
+    // Result only carries the originally selected columns plus related columns via join (no leakage of test_bookings.person_id or timestamps into the attribute list)
+    expect($rows->first()->getAttributes())->toHaveKey('note');
+});

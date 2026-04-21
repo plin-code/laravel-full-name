@@ -84,7 +84,10 @@ final class FullNameMatcher
                 '=',
                 "{$relatedTable}.{$ownerKey}",
             );
-            $query->select("{$mainTable}.*");
+
+            if (empty($query->getQuery()->columns)) {
+                $query->select("{$mainTable}.*");
+            }
         }
 
         return $query
