@@ -25,12 +25,13 @@ final class FullNameMatcher
         return $query->where(function (Builder $sub) use ($pattern, $options) {
             $first = $options->firstNameColumn;
             $last = $options->lastNameColumn;
+            $escape = self::LIKE_ESCAPE_CHAR;
 
             $sub->whereRaw(
-                "LOWER(CONCAT(COALESCE({$first}, ''), ' ', COALESCE({$last}, ''))) LIKE ? ESCAPE '!'",
+                "LOWER(CONCAT(COALESCE({$first}, ''), ' ', COALESCE({$last}, ''))) LIKE ? ESCAPE '{$escape}'",
                 [$pattern],
             )->orWhereRaw(
-                "LOWER(CONCAT(COALESCE({$last}, ''), ' ', COALESCE({$first}, ''))) LIKE ? ESCAPE '!'",
+                "LOWER(CONCAT(COALESCE({$last}, ''), ' ', COALESCE({$first}, ''))) LIKE ? ESCAPE '{$escape}'",
                 [$pattern],
             );
         });
