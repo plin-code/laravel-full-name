@@ -1,9 +1,4 @@
-# laravel-full-name
-
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/plin-code/laravel-full-name.svg?style=flat-square)](https://packagist.org/packages/plin-code/laravel-full-name)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/plin-code/laravel-full-name/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/plin-code/laravel-full-name/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/plin-code/laravel-full-name/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/plin-code/laravel-full-name/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/plin-code/laravel-full-name.svg?style=flat-square)](https://packagist.org/packages/plin-code/laravel-full-name)
+# Laravel Fullname
 
 Search and sort Eloquent queries (and Filament tables) by a person's full name stored across two columns (`first_name` and `last_name`), either on the main model or on a `BelongsTo` relation.
 
@@ -78,28 +73,6 @@ TextColumn::make('full_name')
 
 The matching strategy uses `LOWER(CONCAT(COALESCE(first, ''), ' ', COALESCE(last, '')))` which prevents btree indexes from being used on `first_name` or `last_name`. On tables up to a few hundred thousand rows this is typically acceptable for admin panel search. For very large tables, pair this package with a dedicated search engine (Meilisearch, Scout, Algolia) and use this package only for sort.
 
-## API reference
-
-### `Builder::searchFullName(string $search, ?string $relation = null, string $firstNameColumn = 'first_name', string $lastNameColumn = 'last_name'): Builder`
-
-Applies the full name search filter to the query. Returns the query for chaining.
-
-### `Builder::orderByFullName(string $direction = 'asc', ?string $relation = null, string $firstNameColumn = 'first_name', string $lastNameColumn = 'last_name'): Builder`
-
-Applies a multi column sort (last name, then first name) in the given direction. When a relation is provided, performs a `joinSub` against the related model's own query to respect global scopes (such as `SoftDeletes`).
-
-### `TextColumn::fullNameSearchable(?string $relation = null, string $firstNameColumn = 'first_name', string $lastNameColumn = 'last_name'): static`
-
-Registers a Filament searchable query callback that delegates to `searchFullName`.
-
-### `TextColumn::fullNameSortable(?string $relation = null, string $firstNameColumn = 'first_name', string $lastNameColumn = 'last_name'): static`
-
-Registers a Filament sortable query callback that delegates to `orderByFullName`.
-
-### Naming conventions
-
-The two API layers follow their respective framework idioms. Eloquent Builder macros use the verb-first convention (`searchFullName`, `orderByFullName`), consistent with query scopes. Filament column macros use the noun-first pattern with the `-able` suffix (`fullNameSearchable`, `fullNameSortable`), consistent with column configuration methods such as `searchable` and `sortable`.
-
 ## Matching behavior
 
 The core uses `LOWER(CONCAT(COALESCE(first, ''), ' ', COALESCE(last, '')))` matched with `LIKE ? ESCAPE '!'` in both forward and reversed concatenation forms.
@@ -110,14 +83,14 @@ The core uses `LOWER(CONCAT(COALESCE(first, ''), ' ', COALESCE(last, '')))` matc
 | `rossi` | first_name=`'Mario'`, last_name=`'Rossi'` | yes |
 | `mario rossi` | first_name=`'Mario'`, last_name=`'Rossi'` | yes |
 | `rossi mario` | first_name=`'Mario'`, last_name=`'Rossi'` | yes |
-| `maria` | first_name=`'Mariacarmela'`, last_name=`'Rossi'` | yes (substring, single token) |
-| `maria rossi` | first_name=`'Mariacarmela'`, last_name=`'Rossi'` | no (multi token) |
-| `mariacarmela rossi` | first_name=`'Mariacarmela'`, last_name=`'Rossi'` | yes |
+| `maria` | first_name=`'Marianna'`, last_name=`'Rossi'` | yes (substring, single token) |
+| `maria rossi` | first_name=`'Marianna'`, last_name=`'Rossi'` | no (multi token) |
+| `marianna rossi` | first_name=`'Marianna'`, last_name=`'Rossi'` | yes |
 | `mario giovanni rossi` | first_name=`'Mario Giovanni'`, last_name=`'Rossi'` | yes |
 | `rossi mario giovanni` | first_name=`'Mario Giovanni'`, last_name=`'Rossi'` | yes |
 | `bianchi mario` | first_name=`'Mario'`, last_name=`'Rossi Bianchi'` | yes |
 
-The asymmetry between single token and multi token queries is intentional and emerges from the SQL pattern. Single token queries use substring match, so `maria` matches records containing `maria` anywhere in either column. Multi token queries require the tokens to appear contiguously with the separating space between them in the concatenated `first last` or `last first` form, so `maria rossi` matches `Maria Rossi` but not `Mariacarmela Rossi` (the separator space is not present between `maria` and `rossi` in the concatenation). Single token queries are exploratory (the user may be typing a prefix), multi token queries target a specific person.
+The asymmetry between single token and multi token queries is intentional and emerges from the SQL pattern. Single token queries use substring match, so `maria` matches records containing `maria` anywhere in either column. Multi token queries require the tokens to appear contiguously with the separating space between them in the concatenated `first last` or `last first` form, so `maria rossi` matches `Maria Rossi` but not `Marianna Rossi` (the separator space is not present between `maria` and `rossi` in the concatenation). Single token queries are exploratory (the user may be typing a prefix), multi token queries target a specific person.
 
 ## Limitations
 
@@ -135,8 +108,6 @@ composer test
 composer analyse
 composer format
 ```
-
-The main suite runs against SQLite in memory. Cross driver integration tests (MySQL and PostgreSQL) run in CI against service containers.
 
 ## Contributing
 

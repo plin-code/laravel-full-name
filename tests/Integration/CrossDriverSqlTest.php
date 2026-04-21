@@ -36,7 +36,7 @@ it('matches single token across drivers', function (string $driver) {
 it('matches multi token across drivers', function (string $driver) {
     withDriver($driver, function () {
         Person::create(['first_name' => 'Mario', 'last_name' => 'Rossi']);
-        Person::create(['first_name' => 'Mariacarmela', 'last_name' => 'Rossi']);
+        Person::create(['first_name' => 'Marianna', 'last_name' => 'Rossi']);
 
         $query = Person::query();
         FullNameMatcher::applySearch($query, 'mario rossi', new FullNameOptions);

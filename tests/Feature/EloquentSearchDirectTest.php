@@ -64,17 +64,17 @@ it('matches a single token against last_name', function () {
 
 it('matches a single token as a substring', function () {
     $ids = seed([
-        'mariacarmela' => ['Mariacarmela', 'Rossi'],
+        'marianna' => ['Marianna', 'Rossi'],
     ]);
 
-    expect(applySearch('maria'))->toBe([$ids['mariacarmela']]);
-    expect(applySearch('mari'))->toBe([$ids['mariacarmela']]);
+    expect(applySearch('maria'))->toBe([$ids['marianna']]);
+    expect(applySearch('mari'))->toBe([$ids['marianna']]);
 });
 
 it('matches first then last name multi token', function () {
     $ids = seed([
         'mario' => ['Mario', 'Rossi'],
-        'mariacarmela' => ['Mariacarmela', 'Rossi'],
+        'marianna' => ['Marianna', 'Rossi'],
     ]);
 
     expect(applySearch('mario rossi'))->toBe([$ids['mario']]);
@@ -82,7 +82,7 @@ it('matches first then last name multi token', function () {
 
 it('does not match multi token across word boundary', function () {
     seed([
-        'mariacarmela' => ['Mariacarmela', 'Rossi'],
+        'marianna' => ['Marianna', 'Rossi'],
     ]);
 
     expect(applySearch('maria rossi'))->toBe([]);
