@@ -74,6 +74,10 @@ TextColumn::make('full_name')
     );
 ```
 
+## Performance considerations
+
+The matching strategy uses `LOWER(CONCAT(COALESCE(first, ''), ' ', COALESCE(last, '')))` which prevents btree indexes from being used on `first_name` or `last_name`. On tables up to a few hundred thousand rows this is typically acceptable for admin panel search. For very large tables, pair this package with a dedicated search engine (Meilisearch, Scout, Algolia) and use this package only for sort.
+
 ## API reference
 
 ### `Builder::searchFullName(string $search, ?string $relation = null, string $firstNameColumn = 'first_name', string $lastNameColumn = 'last_name'): Builder`
@@ -92,6 +96,10 @@ Registers a Filament searchable query callback that delegates to `searchFullName
 
 Registers a Filament sortable query callback that delegates to `orderByFullName`.
 
+### Naming conventions
+
+The two API layers follow their respective framework idioms. Eloquent Builder macros use the verb-first convention (`searchFullName`, `orderByFullName`), consistent with query scopes. Filament column macros use the noun-first pattern with the `-able` suffix (`fullNameSearchable`, `fullNameSortable`), consistent with column configuration methods such as `searchable` and `sortable`.
+
 ## Matching behavior
 
 The core uses `LOWER(CONCAT(COALESCE(first, ''), ' ', COALESCE(last, '')))` matched with `LIKE ? ESCAPE '!'` in both forward and reversed concatenation forms.
@@ -103,22 +111,22 @@ The core uses `LOWER(CONCAT(COALESCE(first, ''), ' ', COALESCE(last, '')))` matc
 | `mario rossi` | first_name=`'Mario'`, last_name=`'Rossi'` | yes |
 | `rossi mario` | first_name=`'Mario'`, last_name=`'Rossi'` | yes |
 | `maria` | first_name=`'Mariacarmela'`, last_name=`'Rossi'` | yes (substring, single token) |
-| `maria rossi` | first_name=`'Mariacarmela'`, last_name=`'Rossi'` | no (word boundary, multi token) |
+| `maria rossi` | first_name=`'Mariacarmela'`, last_name=`'Rossi'` | no (multi token) |
 | `mariacarmela rossi` | first_name=`'Mariacarmela'`, last_name=`'Rossi'` | yes |
 | `mario giovanni rossi` | first_name=`'Mario Giovanni'`, last_name=`'Rossi'` | yes |
 | `rossi mario giovanni` | first_name=`'Mario Giovanni'`, last_name=`'Rossi'` | yes |
 | `bianchi mario` | first_name=`'Mario'`, last_name=`'Rossi Bianchi'` | yes |
 
-The asymmetry between single token (substring) and multi token (word boundary) matching is intentional. Single token queries are exploratory (the user may be typing a prefix), multi token queries target a specific person.
+The asymmetry between single token and multi token queries is intentional and emerges from the SQL pattern. Single token queries use substring match, so `maria` matches records containing `maria` anywhere in either column. Multi token queries require the tokens to appear contiguously with the separating space between them in the concatenated `first last` or `last first` form, so `maria rossi` matches `Maria Rossi` but not `Mariacarmela Rossi` (the separator space is not present between `maria` and `rossi` in the concatenation). Single token queries are exploratory (the user may be typing a prefix), multi token queries target a specific person.
 
 ## Limitations
 
 1. Only the `BelongsTo` relation type is supported in v1. `HasOne`, `HasMany`, `BelongsToMany`, `MorphTo`, and nested relations raise `UnsupportedRelationException` at query build time.
 2. Accent and diacritic normalization is delegated to the database collation. On MySQL, use `utf8mb4_unicode_ci` or `utf8mb4_0900_ai_ci`. On PostgreSQL, consider the `unaccent` extension if needed.
-3. Large tables may experience slow search because `LOWER(CONCAT(...))` cannot use a btree index. For very large tables, pair this package with a dedicated search engine (Meilisearch, Scout, Algolia).
-4. Fuzzy matching (soundex, metaphone, Levenshtein, trigram) is out of scope.
-5. Single column full name (one `name` column) is not handled. Filament's native `->searchable(['name'])` covers that case already.
-6. Empty or whitespace only search input leaves the query unchanged (no `WHERE` clause is added).
+3. Fuzzy matching (soundex, metaphone, Levenshtein, trigram) is out of scope.
+4. Single column full name (one `name` column) is not handled. Filament's native `->searchable(['name'])` covers that case already.
+5. Empty or whitespace only search input leaves the query unchanged (no `WHERE` clause is added).
+6. When combining `orderByFullName(relation: ...)` with an explicit `->select([...])` on the main query, qualify the column names with the main table name (for example `->select(['test_bookings.id'])` rather than `->select(['id'])`). The package performs a `joinSub` under the hood, which can introduce ambiguity for unqualified columns that exist on both tables.
 
 ## Testing
 
