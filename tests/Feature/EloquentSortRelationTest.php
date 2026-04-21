@@ -96,6 +96,22 @@ it('throws on missing relation for sort', function () {
     ))->toThrow(UnsupportedRelationException::class, 'is not defined');
 });
 
+it('skips duplicate joinSub when orderByFullName is called twice', function () {
+    $a = Person::create(['first_name' => 'Anna', 'last_name' => 'Azzi']);
+    $b = Person::create(['first_name' => 'Giulia', 'last_name' => 'Bianchi']);
+
+    Booking::create(['person_id' => $a->id]);
+    Booking::create(['person_id' => $b->id]);
+
+    $query = Booking::query();
+    FullNameMatcher::applySort($query, 'asc', new FullNameOptions(relation: 'person'));
+    FullNameMatcher::applySort($query, 'asc', new FullNameOptions(relation: 'person'));
+
+    $joins = $query->getQuery()->joins ?? [];
+
+    expect($joins)->toHaveCount(1);
+});
+
 it('preserves pre-existing select columns on the main query', function () {
     $alice = Person::create(['first_name' => 'Alice', 'last_name' => 'Smith']);
     $bob = Person::create(['first_name' => 'Bob', 'last_name' => 'Jones']);

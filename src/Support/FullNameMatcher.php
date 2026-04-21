@@ -119,6 +119,15 @@ final class FullNameMatcher
     }
 
     /**
+     * Detect whether the target table is already joined on the query.
+     *
+     * Matches plain string table references, `joinSub` Expression aliases with
+     * double-quoted (SQLite, PostgreSQL) or backtick (MySQL) quoting. Custom
+     * alias patterns or SQL Server bracket quoting are not detected and may
+     * result in a duplicate join. Callers performing manual joins should
+     * avoid calling `orderByFullName` on a query that already carries a join
+     * to the related table under a non-standard alias.
+     *
      * @template TModel of \Illuminate\Database\Eloquent\Model
      *
      * @param  Builder<TModel>  $query
