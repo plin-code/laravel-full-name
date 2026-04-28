@@ -22,7 +22,7 @@ searchFullName(
 **Parameters**
 
 - `$search` is the raw user input. Whitespace is collapsed and the whole string is lowercased before being matched.
-- `$relation` is an optional `BelongsTo` relation name on the query's model. When supplied, the search is wrapped in `whereHas`.
+- `$relation` is an optional `BelongsTo` or `HasOne` relation name on the query's model. When supplied, the search is wrapped in `whereHas`.
 - `$firstNameColumn` and `$lastNameColumn` override the default column names on the target table (the main table when `$relation` is null, the related table otherwise).
 
 **Returns**
@@ -31,7 +31,7 @@ The same builder for fluent chaining.
 
 **Throws**
 
-- `PlinCode\LaravelFullName\Exceptions\UnsupportedRelationException` when `$relation` is set but the named relation either does not exist on the model or is not a `BelongsTo`.
+- `PlinCode\LaravelFullName\Exceptions\UnsupportedRelationException` when `$relation` is set but the named relation either does not exist on the model or is neither a `BelongsTo` nor a `HasOne`.
 
 **Examples**
 
@@ -48,6 +48,14 @@ Via a BelongsTo relation.
 ```php
 Booking::query()
     ->searchFullName($request->input('q'), relation: 'person')
+    ->paginate();
+```
+
+Via a HasOne relation. Given `User hasOne(Hiker::class)`:
+
+```php
+User::query()
+    ->searchFullName($request->input('q'), relation: 'hiker')
     ->paginate();
 ```
 
@@ -80,7 +88,7 @@ orderByFullName(
 **Parameters**
 
 - `$direction` accepts `'asc'` or `'desc'` (case insensitive, trimmed). Any other value raises `InvalidSortDirectionException`.
-- `$relation` is an optional `BelongsTo` relation name. When supplied, a `joinSub` against the related model's own query is performed, which preserves global scopes such as `SoftDeletes`.
+- `$relation` is an optional `BelongsTo` or `HasOne` relation name. When supplied, a `joinSub` against the related model's own query is performed, which preserves global scopes such as `SoftDeletes`. The join keys are inferred from the relation type: `foreignKey = ownerKey` for `BelongsTo`, `localKey = foreignKey` for `HasOne`.
 - `$firstNameColumn` and `$lastNameColumn` override the default column names.
 
 **Returns**
@@ -186,7 +194,7 @@ TextColumn::make('user.full_name')
 Extends `\InvalidArgumentException`. Two named constructors:
 
 - `UnsupportedRelationException::forMissingRelation(string $relationName, string $modelClass)` raised when the named relation method does not exist on the query's model.
-- `UnsupportedRelationException::forRelationType(string $relationName, string $modelClass, string $actualType)` raised when the relation exists but is not a `BelongsTo` (for example `HasMany`, `HasOne`, `MorphTo`).
+- `UnsupportedRelationException::forRelationType(string $relationName, string $modelClass, string $actualType)` raised when the relation exists but is neither a `BelongsTo` nor a `HasOne` (for example `HasMany`, `BelongsToMany`, `MorphTo`).
 
 ### `InvalidSortDirectionException`
 

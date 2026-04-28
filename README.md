@@ -6,7 +6,7 @@
 [![PHPStan Action Status](https://img.shields.io/github/actions/workflow/status/plin-code/laravel-full-name/phpstan.yml?branch=main&label=phpstan&style=flat-square)](https://github.com/plin-code/laravel-full-name/actions/workflows/phpstan.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/plin-code/laravel-full-name.svg?style=flat-square)](https://packagist.org/packages/plin-code/laravel-full-name)
 
-Search and sort Eloquent queries (and Filament tables) by a person's full name stored across two columns (`first_name` and `last_name`), either on the main model or on a `BelongsTo` relation.
+Search and sort Eloquent queries (and Filament tables) by a person's full name stored across two columns (`first_name` and `last_name`), either on the main model or on a `BelongsTo` / `HasOne` relation.
 
 ## What it solves
 
@@ -61,6 +61,15 @@ TextColumn::make('user.full_name')
     ->fullNameSortable(relation: 'user');
 ```
 
+### Filament, via `HasOne`
+
+```php
+// User hasOne(Hiker::class) — search and sort users by their hiker full name.
+TextColumn::make('hiker.full_name')
+    ->fullNameSearchable(relation: 'hiker')
+    ->fullNameSortable(relation: 'hiker');
+```
+
 ### Custom column names
 
 ```php
@@ -104,7 +113,7 @@ See [docs/conventions.md](docs/conventions.md) for the rationale behind the nami
 
 ## Limitations
 
-1. Only the `BelongsTo` relation type is supported in v1. `HasOne`, `HasMany`, `BelongsToMany`, `MorphTo`, and nested relations raise `UnsupportedRelationException` at query build time.
+1. Only the `BelongsTo` and `HasOne` relation types are supported. `HasMany`, `BelongsToMany`, `MorphTo`, and nested relations raise `UnsupportedRelationException` at query build time.
 2. Accent and diacritic normalization is delegated to the database collation. On MySQL, use `utf8mb4_unicode_ci` or `utf8mb4_0900_ai_ci`. On PostgreSQL, consider the `unaccent` extension if needed.
 3. Fuzzy matching (soundex, metaphone, Levenshtein, trigram) is out of scope.
 4. Single column full name (one `name` column) is not handled. Filament's native `->searchable(['name'])` covers that case already.
