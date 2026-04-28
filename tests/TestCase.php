@@ -14,7 +14,7 @@ class TestCase extends Orchestra
     {
         parent::setUp();
 
-        foreach (['test_booking_items', 'test_bookings', 'test_persons'] as $table) {
+        foreach (['test_booking_items', 'test_bookings', 'test_persons', 'test_accounts'] as $table) {
             if (Schema::hasTable($table)) {
                 Schema::drop($table);
             }

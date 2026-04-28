@@ -6,6 +6,7 @@ use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Query\JoinClause;
 use PlinCode\LaravelFullName\Exceptions\InvalidSortDirectionException;
 use PlinCode\LaravelFullName\Exceptions\UnsupportedRelationException;
@@ -35,7 +36,7 @@ final class FullNameMatcher
         $pattern = '%'.$escaped.'%';
 
         if ($options->relation !== null) {
-            self::assertBelongsTo($query, $options->relation);
+            self::assertSupportedRelation($query, $options->relation);
 
             return $query->whereHas(
                 $options->relation,
@@ -85,27 +86,24 @@ final class FullNameMatcher
     ): Builder {
         /** @var string $relationName */
         $relationName = $options->relation;
-        self::assertBelongsTo($query, $relationName);
+        $relation = self::assertSupportedRelation($query, $relationName);
 
-        /** @var BelongsTo<Model, Model> $relation */
-        $relation = $query->getModel()->{$relationName}();
         $related = $relation->getRelated();
         $mainTable = $query->getModel()->getTable();
         $relatedTable = $related->getTable();
-        $foreignKey = $relation->getForeignKeyName();
-        $ownerKey = $relation->getOwnerKeyName();
+        [$mainKey, $relatedKey] = self::resolveJoinKeys($relation);
 
         if (! self::alreadyJoined($query, $relatedTable)) {
             $query->joinSub(
                 $related->newQuery()->select([
-                    "{$relatedTable}.{$ownerKey}",
+                    "{$relatedTable}.{$relatedKey}",
                     "{$relatedTable}.{$options->firstNameColumn}",
                     "{$relatedTable}.{$options->lastNameColumn}",
                 ]),
                 $relatedTable,
-                "{$mainTable}.{$foreignKey}",
+                "{$mainTable}.{$mainKey}",
                 '=',
-                "{$relatedTable}.{$ownerKey}",
+                "{$relatedTable}.{$relatedKey}",
             );
 
             if (empty($query->getQuery()->columns)) {
@@ -116,6 +114,19 @@ final class FullNameMatcher
         return $query
             ->orderBy("{$relatedTable}.{$options->lastNameColumn}", $direction)
             ->orderBy("{$relatedTable}.{$options->firstNameColumn}", $direction);
+    }
+
+    /**
+     * @param  BelongsTo<Model, Model>|HasOne<Model, Model>  $relation
+     * @return array{0: string, 1: string} [mainTableKeyColumn, relatedTableKeyColumn]
+     */
+    private static function resolveJoinKeys(BelongsTo|HasOne $relation): array
+    {
+        if ($relation instanceof BelongsTo) {
+            return [$relation->getForeignKeyName(), $relation->getOwnerKeyName()];
+        }
+
+        return [$relation->getLocalKeyName(), $relation->getForeignKeyName()];
     }
 
     /**
@@ -206,8 +217,9 @@ final class FullNameMatcher
      * @template TModel of \Illuminate\Database\Eloquent\Model
      *
      * @param  Builder<TModel>  $query
+     * @return BelongsTo<Model, Model>|HasOne<Model, Model>
      */
-    private static function assertBelongsTo(Builder $query, string $relationName): void
+    private static function assertSupportedRelation(Builder $query, string $relationName): BelongsTo|HasOne
     {
         $model = $query->getModel();
         $modelClass = $model::class;
@@ -221,7 +233,7 @@ final class FullNameMatcher
 
         $relation = $model->{$relationName}();
 
-        if (! $relation instanceof BelongsTo) {
+        if (! $relation instanceof BelongsTo && ! $relation instanceof HasOne) {
             $relationClass = is_object($relation) ? class_basename($relation) : gettype($relation);
             throw UnsupportedRelationException::forRelationType(
                 $relationName,
@@ -229,5 +241,8 @@ final class FullNameMatcher
                 $relationClass,
             );
         }
+
+        /** @var BelongsTo<Model, Model>|HasOne<Model, Model> $relation */
+        return $relation;
     }
 }

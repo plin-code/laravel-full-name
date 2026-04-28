@@ -8,8 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
+        Schema::create('test_accounts', function (Blueprint $table) {
+            $table->id();
+            $table->string('label')->nullable();
+            $table->timestamps();
+        });
+
         Schema::create('test_persons', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('account_id')->nullable()->constrained('test_accounts');
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('given_name')->nullable();
@@ -38,5 +45,6 @@ return new class extends Migration
         Schema::dropIfExists('test_booking_items');
         Schema::dropIfExists('test_bookings');
         Schema::dropIfExists('test_persons');
+        Schema::dropIfExists('test_accounts');
     }
 };

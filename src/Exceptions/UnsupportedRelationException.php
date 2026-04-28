@@ -12,7 +12,7 @@ class UnsupportedRelationException extends InvalidArgumentException
         string $actualType,
     ): self {
         return new self(
-            "Relation '{$relationName}' on {$modelClass} must be BelongsTo. "
+            "Relation '{$relationName}' on {$modelClass} must be BelongsTo or HasOne. "
             ."Got {$actualType}."
         );
     }
