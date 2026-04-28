@@ -2,6 +2,17 @@
 
 All notable changes to `laravel-full-name` will be documented in this file.
 
+## v1.1.0 - 2026-04-28
+
+### Added
+
+- `HasOne` relation support for both `searchFullName` (via `whereHas`) and `orderByFullName` (via `joinSub`). Join keys are inferred from the relation type: `foreignKey = ownerKey` for `BelongsTo`, `localKey = foreignKey` for `HasOne`.
+- New `Account` test fixture and `EloquentSearchHasOneRelationTest` / `EloquentSortHasOneRelationTest` covering search, sort, soft deletes, idempotent joins, and row deduplication.
+
+### Changed
+
+- `UnsupportedRelationException::forRelationType` message now reads `must be BelongsTo or HasOne` to reflect the expanded relation support.
+
 ## v1.0.0 - 2026-04-21
 
 Initial release.
