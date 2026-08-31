@@ -2,6 +2,13 @@
 
 All notable changes to `laravel-full-name` will be documented in this file.
 
+## v1.1.1 - 2026-08-31
+
+### Fixed
+
+- `phpstan`: `FullNameMatcher::applySortWithRelation()` now documents `$direction` as `'asc'|'desc'`, preserving the narrowing done by `applySort()` against Laravel 13's stricter `orderBy()` signature.
+- `rector`: removed the redundant `relation: null` named argument in `FullNameOptions::withoutRelation()`.
+
 ## v1.1.0 - 2026-04-28
 
 ### Added
@@ -44,8 +51,8 @@ Initial release.
 
 ```bash
 composer require plin-code/laravel-full-name
-```
 
+```
 ## 1.0.0 - 2026-04-21
 
 Initial release.
