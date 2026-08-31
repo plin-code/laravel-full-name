@@ -13,7 +13,6 @@ final readonly class FullNameOptions
     public function withoutRelation(): self
     {
         return new self(
-            relation: null,
             firstNameColumn: $this->firstNameColumn,
             lastNameColumn: $this->lastNameColumn,
         );
