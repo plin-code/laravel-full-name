@@ -77,6 +77,7 @@ final class FullNameMatcher
      * @template TModel of \Illuminate\Database\Eloquent\Model
      *
      * @param  Builder<TModel>  $query
+     * @param  'asc'|'desc'  $direction
      * @return Builder<TModel>
      */
     private static function applySortWithRelation(
