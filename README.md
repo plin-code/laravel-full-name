@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/plin-code/laravel-full-name/main/art/banner.png" alt="Laravel Full Name">
+</p>
+
 # Laravel Fullname
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/plin-code/laravel-full-name.svg?style=flat-square)](https://packagist.org/packages/plin-code/laravel-full-name)
